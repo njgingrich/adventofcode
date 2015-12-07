@@ -9,7 +9,7 @@ while True:
     m.update(str(integer))
     hash = m.hexdigest() 
 
-    if hash[:5] == "00000":
+    if hash[:6] == "000000":
         print("hash at %d: %s" % (integer, hash))
         break
 
