@@ -16,5 +16,5 @@ def run_conway(input, i):
     else: 
         return run_conway(conway_sequence(input), i-1)
 
-final = run_conway(input, 40)
+final = run_conway(input, 50)
 print(len(final))
