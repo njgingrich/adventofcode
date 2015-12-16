@@ -2,6 +2,8 @@ import json
 
 def sum_json(data):
     if type(data) == type(dict()):
+        if "red" in data.values():
+            return 0
         return sum(map(sum_json, data.values()))
     if type(data) == type(list()):
         return sum(map(sum_json, data))
