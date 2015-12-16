@@ -1,6 +1,6 @@
 import re
 
-input = "hepxcrrq"
+input = "hepxxyzz"
 
 letters  = re.compile(".*[iol].*")
 pairs    = re.compile("((.)\\2).*((.)\\4)")
