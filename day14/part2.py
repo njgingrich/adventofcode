@@ -8,6 +8,16 @@ def read_input(name):
             graph[split[0]] = [int(split[3]), int(split[7]), int(split[14]), 0, 0]
     return graph
 
+def getWinner(reindeer):
+    max = -1
+    key = None
+    for r in reindeer:
+        if reindeer[r][3] > max:
+            max = reindeer[r][3]
+            key = r
+    reindeer[key][4] += 1
+    return r
+
 def advance(time):
     newtime = time + 1
     for r in reindeer:
@@ -24,6 +34,7 @@ reindeer = read_input('input.txt')
 time = 1 
 while time <= 2503:
     time = advance(time)
+    getWinner(reindeer)
 
 for r in reindeer:
-    print(r + ": " + str(reindeer[r][3]))
+    print(r + ":   \t" + str(reindeer[r][3]) + ",\t" + str(reindeer[r][4]))
