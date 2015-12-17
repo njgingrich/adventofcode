@@ -9,10 +9,6 @@ def read_input(name):
             split = re.findall(r"[\w']+", line)
             if split[2] == "lose":
                 split[3] = -1 * int(split[3])
-            #try:
-                #people[split[0]].append((split[3], split[10]))
-            #except:
-                #people[split[0]] = [(split[3], split[10])]
             try:
                 people[split[0]][split[10]] = split[3]
             except:
