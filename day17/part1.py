@@ -10,7 +10,7 @@ for prod in it.product(range(2), repeat=len(containers)):
     sum = 0
     for i,c in enumerate(prod):
         if c == 1:
-            sum += containers[i] 
+            sum += containers[i]
     if sum == 150:
         combinations.append(prod)
 
