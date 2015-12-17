@@ -27,6 +27,7 @@ for prod in it.product(range(101), repeat=number_ingredients):
         for x in range(0, number_ingredients):
             amts[0,x] = prod[x]
         matrix_prod = a * amts
-        max_total = max(max_total, numpy.product(map(sumpos, matrix_prod)[:-1]))
+        if map(sumpos, matrix_prod)[-1] == 500:
+            max_total = max(max_total, numpy.product(map(sumpos, matrix_prod)[:-1]))
 
 print(str(max_total))
