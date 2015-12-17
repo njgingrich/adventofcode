@@ -9,10 +9,21 @@ def aunts_with_item(item, amount, sues):
     new_sues = {}
     for sue in sues:
         try:
-            if sues[sue][item] != str(amount):
-                pass
+            if item in ("cats", "trees"):
+                if sues[sue][item] < str(amount):
+                    pass
+                else:
+                    new_sues[sue] = sues[sue]
+            elif item in ("pomeranians", "goldfish"):
+                if sues[sue][item] > str(amount):
+                    pass
+                else:
+                    new_sues[sue] = sues[sue]
             else:
-                new_sues[sue] = sues[sue]
+                if sues[sue][item] != str(amount):
+                    pass
+                else:
+                    new_sues[sue] = sues[sue]
         except:
             new_sues[sue] = sues[sue]
     return new_sues
@@ -31,4 +42,5 @@ for k in keys[1:]:
     aunts = aunts_with_item(k[0], k[1], aunts)
 
 for aunt in aunts:
-    print aunt
+    print(aunt)
+    print(aunts[aunt])
