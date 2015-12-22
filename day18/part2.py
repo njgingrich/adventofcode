@@ -7,6 +7,7 @@ num_cols = 100
 def make_grid():
     grid = np.zeros(shape=(num_rows, num_cols))
     with open('input.txt', 'r') as f:
+    #with open('test.txt', 'r') as f:
         row = 0
         for line in f.readlines():
             for i,c in enumerate(line.strip()):
@@ -32,7 +33,16 @@ def neighbors_on(grid, index):
 
 def step(grid):
     newgrid = copy.deepcopy(grid)
-    it = np.nditer(newgrid, flags=['multi_index'])
+    it = np.nditer(newgrid, op_flags=['readwrite'], flags=['multi_index'])
+    newgrid[0,0] = 1
+    newgrid[0,num_cols-1] = 1
+    newgrid[num_rows-1,0] = 1
+    newgrid[num_rows-1,num_cols-1] = 1
+    grid[0,0] = 1
+    grid[0,num_cols-1] = 1
+    grid[num_rows-1,0] = 1
+    grid[num_rows-1,num_cols-1] = 1
+    #print(newgrid)
     while not it.finished:
         if it[0] == 1 and neighbors_on(grid, it.multi_index) not in (2,3):
                 newgrid[it.multi_index[0], it.multi_index[1]] = 0
@@ -46,4 +56,10 @@ grid = make_grid()
 for x in range(0, 100):
     grid = step(grid)
 
+grid[0,0] = 1
+grid[0,num_cols-1] = 1
+grid[num_rows-1,0] = 1
+grid[num_rows-1,num_cols-1] = 1
+print("final grid: ")
+print(grid)
 print(sum(sum(grid)))
