@@ -2,26 +2,28 @@ require 'csv'
 
 class Day2
   def initialize(desired)
+    @desired = desired
     @initial_input = CSV.read('input.txt')[0].map{ |v| v.to_i }
-    @input = @initial_input
+    @input = @initial_input.dup
     @step = 0
 
-    output = 0
-    (0..99).each do |noun|
-      (0..99).each do |verb|
+    p self.find_output(0, 99)
+  end
+
+  def find_output(min, max)
+    (min..max).each do |noun|
+      (min..max).each do |verb|
         result = self.run_with_input(noun, verb)
-        p "result: #{result}"
-        if result == desired
-          "#{noun}, #{verb}"
-          return
+        if result == @desired
+          return (100 * noun) + verb
         end
       end
     end
+    return -1
   end
 
   def run_with_input(noun, verb)
-    reset_input!
-    p "running with noun=#{noun}, verb=#{verb}"
+    reset!
     @input[1] = noun
     @input[2] = verb
 
@@ -54,8 +56,9 @@ class Day2
 
   private
 
-  def reset_input!
-    @input = @initial_input
+  def reset!
+    @input = @initial_input.dup
+    @step = 0
   end
 
 end
