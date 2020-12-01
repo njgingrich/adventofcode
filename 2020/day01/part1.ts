@@ -1,4 +1,4 @@
-export async function readInput(): Promise<string[]> {
+async function readInput(): Promise<string[]> {
     const file = await Deno.readTextFile("./input.txt");
     return file.split('\n').filter(Boolean);
 }
@@ -17,3 +17,5 @@ function solve(): number {
 
 const numbers = (await readInput()).map((n) => Number(n));
 console.log(solve());
+
+export {};
