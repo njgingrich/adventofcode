@@ -5,6 +5,9 @@ root = true
 end_of_line = lf
 insert_final_newline = true
 
+[*.txt]
+end_of_line = unset
+
 # Set default charset
 [*.{js,py}]
 charset = utf-8
