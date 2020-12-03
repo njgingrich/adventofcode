@@ -20,38 +20,42 @@ function parseLine(line: string): ParsedData {
   };
 }
 
+function getHappinessForOrdering(
+  ordering: string[],
+  sentiments: Record<string, Record<string, number>>,
+) {
+  let totalHappiness = 0;
+  for (let i = 0; i < ordering.length; i++) {
+    const towardIx = (i + 1) % ordering.length; // loop over to front
+    const from = ordering[i];
+    const toward = ordering[towardIx];
+
+    totalHappiness += sentiments[from][toward];
+    totalHappiness += sentiments[toward][from];
+  }
+
+  return totalHappiness;
+}
+
 function solve(lines: string[]) {
   const data = lines.map(parseLine);
   const people = new Set(data.map((d) => d.from));
-  people.add('Me');
+  people.add("Me");
   const permutations: string[][] = it.permutations(people);
 
   const sentiments: Record<string, Record<string, number>> = {};
-  sentiments['Me'] = {};
+  sentiments["Me"] = {};
   data.forEach((row) => {
     if (!sentiments[row.from]) sentiments[row.from] = {};
     sentiments[row.from][row.toward] = row.happiness;
-    sentiments[row.from]['Me'] = 0;
-    sentiments['Me'][row.from] = 0;
+    sentiments[row.from]["Me"] = 0;
+    sentiments["Me"][row.from] = 0;
   });
 
-  const happinesses = [];
-  for (const p of permutations) {
-    let totalHappiness = 0;
-    for (let i = 0; i < p.length; i++) {
-      const towardIx = (i + 1) % p.length; // loop over to front
-      const from = p[i];
-      const toward = p[towardIx];
-
-      totalHappiness += sentiments[from][toward];
-      totalHappiness += sentiments[toward][from];
-    }
-
-    // console.log(p, totalHappiness);
-    happinesses.push(totalHappiness);
-  }
-
-  return it.max(happinesses);
+  return it.max(
+    it.map(it.permutations(people), (permutation: string[]) =>
+      getHappinessForOrdering(permutation, sentiments)),
+  );
 }
 
 const input = await readInput();
