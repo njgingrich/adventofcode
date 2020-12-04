@@ -70,8 +70,6 @@ function isValid(pass: AnyRecord) {
     }
   });
 
-//   console.log(pass);
-//   console.log(isValidForKey);
   return isValidForKey.every(Boolean);
 }
 
