@@ -1,7 +1,7 @@
-async function readInput(): Promise<string[]> {
-  const file = await Deno.readTextFile("./input.txt");
-  return file.split("\n").filter(Boolean);
-}
+import * as it from "iter-tools";
+import * as path from "path";
+
+import { readInputAsStrings } from "../util";
 
 const vowels = ['a', 'e', 'i', 'o', 'u'];
 const badPairs = ['ab', 'cd', 'pq', 'xy'];
@@ -30,7 +30,7 @@ function solve(lines: string[]) {
     return lines.filter(isNice).length;
 }
 
-const lines = await readInput();
-console.log(solve(lines));
-
-export {};
+export default async function run() {
+  const input = await readInputAsStrings(path.join(__dirname, "./input.txt"));
+  return solve(input);
+}

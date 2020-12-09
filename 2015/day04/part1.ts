@@ -1,8 +1,8 @@
-import { createHash } from "https://deno.land/std@0.79.0/hash/mod.ts";
+import * as it from "iter-tools";
+import * as path from "path";
+import { createHash } from "crypto";
 
-async function readInput(): Promise<string> {
-  return Deno.readTextFile("./input.txt");
-}
+import { readInput } from "../util";
 
 function solve(data: string) {
     let num = -1;
@@ -12,13 +12,13 @@ function solve(data: string) {
         num += 1;
         const hash = createHash("md5");
         hash.update(`${data}${num}`);
-        hashOutput = hash.toString();
+        hashOutput = hash.digest('hex');
     }
 
     return num;
 }
 
-const data = await readInput();
-console.log(solve(data));
-
-export {};
+export default async function run() {
+  const input = await readInput(path.join(__dirname, "./input.txt"));
+  return solve(input);
+}

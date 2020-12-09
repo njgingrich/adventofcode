@@ -1,7 +1,7 @@
-async function readInput(): Promise<string[]> {
-  const file = await Deno.readTextFile("./input.txt");
-  return file.split('\n').filter(Boolean);
-}
+import * as it from "iter-tools";
+import * as path from "path";
+
+import { readInputAsStrings, sum } from "../util";
 
 function requiredpaper(l: number, w: number, h: number): number {
     const surfaceArea = 2 * ((l * w) + (w * h) + (h * l));
@@ -10,13 +10,13 @@ function requiredpaper(l: number, w: number, h: number): number {
 }
 
 function solve(lines: string[]) {
-    return lines.reduce((sum, line) => {
+    return sum(lines.map(line => {
         const [l, w, h] = line.split('x').map(n => Number(n));
-        return sum + requiredpaper(l, w, h);
-    }, 0);
+        return requiredpaper(l, w, h);
+    }))
 }
 
-const lines = await readInput();
-console.log(solve(lines));
-
-export {};
+export default async function run() {
+  const input = await readInputAsStrings(path.join(__dirname, "./input.txt"));
+  return solve(input);
+}

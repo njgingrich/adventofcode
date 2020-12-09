@@ -7,7 +7,7 @@ function solve(numbers: number[]): number {
     for (let i = 0; i < numbers.length; i++) {
         for (let j = i; j < numbers.length; j++) {
             if (numbers[i] + numbers[j] === 2020) {
-                console.log(`${numbers[i]} and ${numbers[j]}`)
+                // console.log(`${numbers[i]} and ${numbers[j]}`)
                 return numbers[i] * numbers[j];
             }
         }

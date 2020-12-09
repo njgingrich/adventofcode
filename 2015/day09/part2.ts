@@ -1,9 +1,7 @@
-import * as it from "https://cdn.pika.dev/itertools@1.6.1";
+import * as it from "iter-tools";
+import * as path from "path";
 
-async function readInput(): Promise<string[]> {
-  const file = await Deno.readTextFile("./input.txt");
-  return file.split("\n").filter(Boolean);
-}
+import { readInputAsStrings, sum } from "../util";
 
 const places: Set<string> = new Set();
 const routes: Record<string, Record<string, number>> = {};
@@ -27,17 +25,17 @@ function solve(lines: string[]) {
 
     const slice1 = p.slice(0, p.length - 1);
     const slice2 = p.slice(1, p.length);
-    const zipped: string[][] = it.zip(slice1, slice2);
-    const sum: number = it.sum(
+        const zipped = it.toArray(it.zip(slice1, slice2));
+    const s: number = sum(
       zipped.map(([start, dest]) => routes[start][dest]),
     );
-    distances.push(sum);
+    distances.push(s);
   }
 
   return Math.max(...distances);
 }
 
-const lines = await readInput();
-console.log(solve(lines));
-
-export {};
+export default async function run() {
+  const input = await readInputAsStrings(path.join(__dirname, "./input.txt"));
+  return solve(input);
+}

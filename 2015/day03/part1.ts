@@ -1,7 +1,7 @@
-async function readInput(): Promise<string[]> {
-  const file = await Deno.readTextFile("./input.txt");
-  return file.split("").filter(Boolean);
-}
+import * as it from "iter-tools";
+import * as path from "path";
+
+import { readInput } from "../util";
 
 const map: Record<Direction, "n" | "s" | "e" | "w"> = {
   '^': 'n',
@@ -12,7 +12,8 @@ const map: Record<Direction, "n" | "s" | "e" | "w"> = {
 
 type Direction = "^" | "v" | ">" | "<";
 
-function solve(directions: Direction[]) {
+function solve(line: string) {
+  const directions = line.split("").filter(Boolean) as Direction[];
   const pos = { n: 0, s: 0, e: 0, w: 0 };
   const coords: Record<string, number> = {};
 
@@ -26,7 +27,7 @@ function solve(directions: Direction[]) {
   return Object.keys(coords).length;
 }
 
-const dirs = await readInput();
-console.log(solve(dirs as Direction[]));
-
-export {};
+export default async function run() {
+  const input = await readInput(path.join(__dirname, "./input.txt"));
+  return solve(input);
+}

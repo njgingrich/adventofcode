@@ -1,24 +1,26 @@
-async function readInput(): Promise<string[]> {
-  const file = await Deno.readTextFile("./input.txt");
-  return file.split("\n").filter(Boolean);
-}
+import * as it from "iter-tools";
+import * as path from "path";
+
+import { readInputAsStrings, sum } from "../util";
 
 function requiredRibbon(l: number, w: number, h: number): number {
-    const forBow = l * w * h;
-    const nums = ([l, w, h]).sort((a,b) => a - b);
-    const forSides = 2 * (nums[0] + nums[1]);
+  const forBow = l * w * h;
+  const nums = [l, w, h].sort((a, b) => a - b);
+  const forSides = 2 * (nums[0] + nums[1]);
 
-    return forBow + forSides;
+  return forBow + forSides;
 }
 
 function solve(lines: string[]) {
-  return lines.reduce((sum, line) => {
-    const [l, w, h] = line.split("x").map((n) => Number(n));
-    return sum + requiredRibbon(l, w, h);
-  }, 0);
+  return sum(
+    lines.map((line) => {
+      const [l, w, h] = line.split("x").map((n) => Number(n));
+      return requiredRibbon(l, w, h);
+    })
+  );
 }
 
-const lines = await readInput();
-console.log(solve(lines));
-
-export {};
+export default async function run() {
+  const input = await readInputAsStrings(path.join(__dirname, "./input.txt"));
+  return solve(input);
+}

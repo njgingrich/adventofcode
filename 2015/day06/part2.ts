@@ -1,7 +1,7 @@
-async function readInput(): Promise<string[]> {
-  const file = await Deno.readTextFile("./input.txt");
-  return file.split("\n").filter(Boolean);
-}
+import * as it from "iter-tools";
+import * as path from "path";
+
+import { readInputAsStrings } from "../util";
 
 const lights: number[][] = new Array(1000).fill(false).map(() =>
   new Array<number>(1000).fill(0)
@@ -36,7 +36,7 @@ function solve(lines: string[]) {
   return sum;
 }
 
-const lines = await readInput();
-console.log(solve(lines));
-
-export {};
+export default async function run() {
+  const input = await readInputAsStrings(path.join(__dirname, "./input.txt"));
+  return solve(input);
+}

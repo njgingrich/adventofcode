@@ -12,7 +12,7 @@ perfObserver.observe({ entryTypes: ["measure"], buffered: true });
 
 async function run() {
   const args = minimist(process.argv.slice(2));
-  const options = Object.assign({y: 2020, p: 1}, args);
+  const options = Object.assign({p: 1}, args);
 
   if (!options.d) {
     console.log('Must pass a day (-d #).');
@@ -23,10 +23,10 @@ async function run() {
     exit(1);
   }
 
-  const importPath = `./${options.y}/day${options.d < 10 ? "0" : ""}${options.d}/part${options.p}`;
+  const importPath = `./day${options.d < 10 ? "0" : ""}${options.d}/part${options.p}`;
   try {
     performance.mark('start');
-    console.log(`Running solution for ${options.y} Day ${options.d}, Part ${options.p}:`)
+    console.log(`Running solution for 2020 Day ${options.d}, Part ${options.p}:`)
     const soln = (await import(importPath)).default;
     const output = await soln();
     performance.mark('end');
