@@ -1,9 +1,7 @@
-import * as it from "https://cdn.pika.dev/itertools@1.6.1";
+import * as it from "iter-tools";
+import * as path from "path";
 
-async function readInput(): Promise<string[]> {
-  const file = await Deno.readTextFile("./input.txt");
-  return file.split("\n").filter(Boolean);
-}
+import { max, readInputAsStrings } from "../util";
 
 type Ticket = {
   row: number;
@@ -21,10 +19,8 @@ function parse(str: string): Ticket {
 
 function toBoolThenNumber(str: string): number {
   const asNumberStr = str
-    .replaceAll("F", "0")
-    .replaceAll("B", "1")
-    .replaceAll("L", "0")
-    .replaceAll("R", "1");
+    .replace(/[FL]/g, "0")
+    .replace(/[BR]/g, "1");
   return parseInt(asNumberStr, 2);
 }
 
@@ -33,10 +29,10 @@ function getSeatId(ticket: Ticket): number {
 }
 
 function solve(lines: string[]) {
-  return it.max(lines.map(parse).map(getSeatId));
+  return max(lines.map(parse).map(getSeatId));
 }
 
-const input = await readInput();
-console.log(solve(input));
-
-export {};
+export default async function run() {
+  const input = await readInputAsStrings(path.join(__dirname, "./input.txt"));
+  return solve(input);
+}

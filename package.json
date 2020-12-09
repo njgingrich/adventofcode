@@ -1,0 +1,20 @@
+{
+  "name": "adventofcode",
+  "version": "1.0.0",
+  "description": "Advent of Code solutions",
+  "main": "index.ts",
+  "repository": "git@github.com:njgingrich/adventofcode.git",
+  "author": "Nathan Gingrich <njgingrich@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@types/minimist": "^1.2.1",
+    "@types/node": "^14.14.11",
+    "iter-tools": "^6.2.6",
+    "minimist": "^1.2.5",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.1.2"
+  },
+  "scripts": {
+    "solve": "node -r ts-node/register/transpile-only --no-warnings index.ts"
+  }
+}

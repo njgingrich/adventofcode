@@ -1,9 +1,7 @@
-import * as it from "https://cdn.pika.dev/itertools@1.6.1";
+import * as it from "iter-tools";
+import * as path from "path";
 
-async function readInput(): Promise<string[]> {
-  const file = await Deno.readTextFile("./input.txt");
-  return file.split("\n").filter(Boolean);
-}
+import { readInputAsStrings } from "../util";
 
 type Operation = "acc" | "jmp" | "nop";
 const OP_KEYS = ["acc", "jmp", "nop"];
@@ -59,7 +57,7 @@ function solve(lines: string[]) {
   return accumulator;
 }
 
-const input = await readInput();
-console.log(solve(input));
-
-export {};
+export default async function run() {
+  const input = await readInputAsStrings(path.join(__dirname, "./input.txt"));
+  return solve(input);
+}

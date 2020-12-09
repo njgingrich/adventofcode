@@ -1,9 +1,7 @@
-import * as it from "https://cdn.pika.dev/itertools@1.6.1";
+import * as it from "iter-tools";
+import * as path from "path";
 
-async function readInput(): Promise<string[]> {
-  const file = await Deno.readTextFile("./input.txt");
-  return file.split("\n").filter(Boolean);
-}
+import { readInputAsStrings, sum } from "../util";
 
 type Bag = {
   color: string;
@@ -39,7 +37,7 @@ function sumOfBags(
     const sums = Object.entries(canContain).map(([color, count]) => {
         return count + (count * sumOfBags(color, bags));
     });
-    const thisSum = it.sum(sums);
+    const thisSum = sum(sums);
 
     return thisSum;
 }
@@ -56,7 +54,7 @@ function solve(lines: string[], searchColor: string) {
   return sumOfBags(searchColor, bags);
 }
 
-const input = await readInput();
-console.log(solve(input, "shiny gold"));
-
-export {};
+export default async function run() {
+  const input = await readInputAsStrings(path.join(__dirname, "./input.txt"));
+  return solve(input, "shiny gold");
+}

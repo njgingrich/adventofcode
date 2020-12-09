@@ -1,9 +1,7 @@
-import * as it from "https://cdn.pika.dev/itertools@1.6.1";
+import * as it from "iter-tools";
+import * as path from "path";
 
-async function readInput(): Promise<string[]> {
-  const file = await Deno.readTextFile("./input.txt");
-  return file.split("\n\n").filter(Boolean);
-}
+import { readInputAsStrings, sum } from "../util";
 
 function parse(group: string) {
   const people = group.split('\n').join('').split('');
@@ -11,10 +9,11 @@ function parse(group: string) {
 }
 
 function solve(lines: string[]) {
-  return it.sum(lines.map(parse));
+  return sum(lines.map(parse));
 }
 
-const input = await readInput();
-console.log(solve(input));
+export default async function run() {
+  const input = await readInputAsStrings(path.join(__dirname, "./input.txt"), "\n\n");
+  return solve(input);
+}
 
-export {};

@@ -1,12 +1,9 @@
-import * as it from "https://cdn.pika.dev/itertools@1.6.1";
+import * as it from "iter-tools";
+import * as path from "path";
 
-async function readInput(): Promise<string[]> {
-  const file = await Deno.readTextFile("./input.txt");
-  return file.split("\n\n").map(l => l.replaceAll('\n', ' ')).filter(Boolean);
-}
-// deno-lint-ignore no-explicit-any
+import { max, readInputAsStrings } from "../util";
+
 type AnyRecord = Record<string, any>;
-
 const REQUIRED_FIELDS = ['byr', 'iyr', 'eyr', 'hgt', 'hcl', 'ecl', 'pid'];
 
 // deno-lint-ignore no-explicit-any
@@ -34,7 +31,11 @@ function solve(lines: string[]) {
     return lines.map(parse).filter(isValid).length;
 }
 
-const input = await readInput();
-console.log(solve(input));
+export default async function run() {
+  let input = await readInputAsStrings(path.join(__dirname, "./input.txt"), "\n\n")
+  input = input
+    .map((l) => l.replace(/\n/g, " "))
+    .filter(Boolean);
+  return solve(input);
+}
 
-export {};

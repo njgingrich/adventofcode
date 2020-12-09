@@ -1,7 +1,7 @@
-async function readInput(): Promise<string[]> {
-  const file = await Deno.readTextFile("./input.txt");
-  return file.split("\n").filter(Boolean);
-}
+import * as it from "iter-tools";
+import * as path from "path";
+
+import { readInputAsStrings } from "../util";
 
 type Slope = {
     rows: number,
@@ -37,8 +37,7 @@ function solve(lines: string[], slope: Slope) {
   return numTrees;
 }
 
-const lines = await readInput();
-const slope = { rows: 1, cols: 3 };
-console.log(solve(lines, slope));
-
-export {};
+export default async function run() {
+  const input = await readInputAsStrings(path.join(__dirname, "./input.txt"));
+  return solve(input, { rows: 1, cols: 3 });
+}

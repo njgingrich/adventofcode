@@ -1,9 +1,7 @@
-import * as it from "https://cdn.pika.dev/itertools@1.6.1";
+import * as it from "iter-tools";
+import * as path from "path";
 
-async function readInput(): Promise<string[]> {
-  const file = await Deno.readTextFile("./input.txt");
-  return file.split("\n").filter(Boolean);
-}
+import { readInputAsStrings } from "../util";
 
 type Bag = {
   color: string;
@@ -74,7 +72,8 @@ function solve(lines: string[], searchColor: string) {
   return new Set(validContainers).size;
 }
 
-const input = await readInput();
-console.log(solve(input, "shiny gold"));
+export default async function run() {
+  const input = await readInputAsStrings(path.join(__dirname, "./input.txt"));
+  return solve(input, "shiny gold");
+}
 
-export {};

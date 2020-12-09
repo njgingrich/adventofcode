@@ -1,18 +1,16 @@
-import * as it from "https://cdn.pika.dev/itertools@1.6.1";
+import * as it from 'iter-tools';
+import * as path from 'path';
 
-async function readInput(): Promise<number[]> {
-  const file = await Deno.readTextFile("./input.txt");
-  return file.split("\n").filter(Boolean).map(Number);
-}
+import { readInputAsNumbers } from "../util";
 
 function solve(lines: number[], preambleSize: number) {
   const numbers = lines.slice(0, preambleSize);
-  let sums: number[] = [
-    ...it.map(
-      it.permutations(numbers, 2),
-      (zip: string[]) => zip[0] + zip[1],
-    ),
-  ];
+  const map = it.map(
+    (zip: number[]) => zip[0] + zip[1],
+    it.permutations(numbers, 2),
+  );
+
+  let sums: number[] = [...map];
 
   for (let i = preambleSize; i < lines.length; i++) {
     const current = lines[i];
@@ -27,14 +25,14 @@ function solve(lines: number[], preambleSize: number) {
     sums = sums.slice((preambleSize - 1));
 
     numbers.shift();
-    const nextSums = it.map(numbers, (num: number) => num + current);
+    const nextSums = it.map((num: number) => num + current, numbers);
     numbers.push(current);
 
     sums.push(...nextSums);
   }
 }
 
-const input = await readInput();
-console.log(solve(input, 25));
-
-export {};
+export default async function run() {
+  const input = await readInputAsNumbers(path.join(__dirname, "./input.txt"));
+  return solve(input, 25);
+}

@@ -1,39 +1,37 @@
-import * as it from "https://cdn.pika.dev/itertools@1.6.1";
+import * as it from "iter-tools";
+import * as path from "path";
 
-async function readInput(): Promise<number[]> {
-  const file = await Deno.readTextFile("./input.txt");
-  return file.split("\n").filter(Boolean).map(Number);
-}
+import { min, max, readInputAsNumbers, sum } from '../util';
 
 function findWeakness(numbers: number[]) {
-  return it.min(numbers) + it.max(numbers);
+  return min(numbers) + max(numbers);
 }
 
 function solve(lines: number[], invalidNumber: number) {
   let numbers: number[] = [];
-
   let rearPtr = 1;
 
   for (let i = 0; i < lines.length; i++) {
     for (let k = rearPtr; k < lines.length; k++) {
       numbers = lines.slice(i, rearPtr);
       // console.log(`Looking at range [${i}, ${rearPtr}] = ${numbers}`);
-      const sum = it.sum(numbers);
+      const s = sum(numbers);
 
       // Move front pointer
-      if (sum > invalidNumber) {
+      if (s > invalidNumber) {
         break;
       } // Move rear pointer
-      else if (sum < invalidNumber) {
+      else if (s < invalidNumber) {
         rearPtr += 1;
-      } else if (sum === invalidNumber) {
+      } else if (s === invalidNumber) {
         return findWeakness(numbers);
       }
     }
   }
 }
 
-const input = await readInput();
-console.log(solve(input, 400480901));
 
-export {};
+export default async function run() {
+  const input = await readInputAsNumbers(path.join(__dirname, './input.txt'));
+  return solve(input, 400480901);
+}

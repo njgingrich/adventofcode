@@ -1,7 +1,7 @@
-async function readInput(): Promise<string[]> {
-  const file = await Deno.readTextFile("./input.txt");
-  return file.split("\n").filter(Boolean);
-}
+import * as it from "iter-tools";
+import * as path from "path";
+
+import { readInputAsStrings } from "../util";
 
 type Slope = {
   rows: number;
@@ -22,8 +22,7 @@ function getMapCoord(row: number, col: number, map: string[][]): string {
   return map[offsetRow][offsetCol];
 }
 
-function solve(lines: string[], slope: Slope) {
-  const map = getMap(lines);
+function solveForSlope(map: string[][], slope: Slope) {
   const pos = { row: 1, col: 1 };
   let numTrees = 0;
 
@@ -37,21 +36,21 @@ function solve(lines: string[], slope: Slope) {
   return numTrees;
 }
 
-const lines = await readInput();
-const slopes = [
-  { rows: 1, cols: 1 },
-  { rows: 1, cols: 3 },
-  { rows: 1, cols: 5 },
-  { rows: 1, cols: 7 },
-  { rows: 2, cols: 1 },
-];
+function solve(lines: string[], slopes: Slope[]) {
+  const map = getMap(lines);
+  const trees = slopes.map((slope) => solveForSlope(map, slope));
+  return trees.reduce((sum, val) => sum * val, 1);
+}
 
-const results = slopes.map((slope) => {
-  const trees = solve(lines, slope);
-//   console.log(`Trees for [${slope.rows}, ${slope.cols}]: ${trees}`);
-  return trees;
-});
+export default async function run() {
+  const lines = await readInputAsStrings(path.join(__dirname, "./input.txt"));
+  const slopes = [
+    { rows: 1, cols: 1 },
+    { rows: 1, cols: 3 },
+    { rows: 1, cols: 5 },
+    { rows: 1, cols: 7 },
+    { rows: 2, cols: 1 },
+  ];
 
-console.log(results.reduce((sum, val) => sum * val, 1));
-
-export {};
+  return solve(lines, slopes);
+}
