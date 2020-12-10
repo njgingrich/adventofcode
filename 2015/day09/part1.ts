@@ -18,7 +18,7 @@ function solve(lines: string[]) {
         routes[dest][start] = Number(distance);
     });
 
-    console.log(routes);
+    // console.log(routes);
     const distances: number[] = [];
     for (const p of it.permutations(places)) {
         if (!Array.isArray(p)) break;

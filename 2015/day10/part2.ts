@@ -1,6 +1,7 @@
-async function readInput(): Promise<string> {
-  return Deno.readTextFile("./input.txt");
-}
+import * as it from "iter-tools";
+import * as path from "path";
+
+import { readInput } from "../util";
 
 function solve(start: string, count: number) {
   let output = start;
@@ -28,7 +29,7 @@ function solve(start: string, count: number) {
   return output.length;
 }
 
-const input = await readInput();
-console.log(solve(input, 50));
-
-export {};
+export default async function run() {
+  const input = await readInput(path.join(__dirname, "./input.txt"));
+  return solve(input, 50);
+}

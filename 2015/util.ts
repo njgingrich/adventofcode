@@ -23,6 +23,11 @@ export async function readInputAsNumbers(dir: string): Promise<number[]> {
   return file.split("\n").filter(Boolean).map(Number);
 }
 
+export async function readInputAsJson(dir: string): Promise<any> {
+  const file = await fs.readFile(dir, "utf-8");
+  return JSON.parse(file);
+}
+
 export function min(arr: Iterable<number>) {
   return it.reduce<number, number>((x, y) => (x < y ? x : y), arr);
 }

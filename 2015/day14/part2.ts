@@ -1,9 +1,7 @@
-import * as it from "https://cdn.pika.dev/itertools@1.6.1";
+import * as it from "iter-tools";
+import * as path from "path";
 
-async function readInput(): Promise<string[]> {
-  const file = await Deno.readTextFile("./input.txt");
-  return file.split("\n").filter(Boolean);
-}
+import { max, readInputAsStrings } from "../util";
 
 type Reindeer = {
   speed: number;
@@ -58,7 +56,7 @@ function solve(lines: string[], seconds: number) {
         }
       }
     }
-    const leaderDistance = it.max(racers.map((racer) => racer.distance));
+    const leaderDistance = max(racers.map((racer) => racer.distance));
 
     for (const racer of racers) {
       if (racer.distance === leaderDistance) {
@@ -68,10 +66,11 @@ function solve(lines: string[], seconds: number) {
   }
 
   const points = racers.map((racer) => racer.points);
-  return it.max(points);
+  return max(points);
 }
 
-const input = await readInput();
-console.log(solve(input, 2503));
 
-export {};
+export default async function run() {
+  const input = await readInputAsStrings(path.join(__dirname, "./input.txt"));
+  return solve(input, 2503);
+}

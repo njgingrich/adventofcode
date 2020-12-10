@@ -1,13 +1,12 @@
-async function readInput(): Promise<string> {
-  return Deno.readTextFile("./input.json");
-}
+import * as it from "iter-tools";
+import * as path from "path";
 
-// deno-lint-ignore no-explicit-any
+import { readInputAsJson } from "../util";
+
 function isObject(value: any): boolean {
   return Object.prototype.toString.call(value) === "[object Object]";
 }
 
-// deno-lint-ignore no-explicit-any
 function getCountFromJson(blob: any): number {
   // console.log('Looking at:', blob);
   if (!isNaN(Number(blob))) {
@@ -26,12 +25,11 @@ function getCountFromJson(blob: any): number {
   }
 }
 
-function solve(data: string) {
-  const json = JSON.parse(data);
+function solve(json: any) {
   return getCountFromJson(json);
 }
 
-const input = await readInput();
-console.log(solve(input));
-
-export {};
+export default async function run() {
+  const input = await readInputAsJson(path.join(__dirname, "./input.json"));
+  return solve(input);
+}

@@ -1,11 +1,12 @@
-async function readInput(): Promise<string> {
-  return Deno.readTextFile("./input.txt");
-}
+import * as it from "iter-tools";
+import * as path from "path";
+
+import { readInput } from "../util";
 
 const LETTERS = "abcdefghijklmnopqrstuvwxyz";
 const letterArray = LETTERS.split("");
 const letterMap: Record<string, number> = {};
-letterArray.forEach((l, i) => letterMap[l] = i);
+letterArray.forEach((l, i) => (letterMap[l] = i));
 
 function nextLetter(letter: string) {
   const ix = (letterMap[letter] + 1) % 26;
@@ -25,8 +26,10 @@ function increment(pass: string[]) {
 
 function strHasStraight(chars: string[], startIx: number): boolean {
   if (startIx + 2 >= chars.length) return false;
-  return (letterMap[chars[startIx + 1]] - letterMap[chars[startIx]] === 1) &&
-    (letterMap[chars[startIx + 2]] - letterMap[chars[startIx + 1]] === 1);
+  return (
+    letterMap[chars[startIx + 1]] - letterMap[chars[startIx]] === 1 &&
+    letterMap[chars[startIx + 2]] - letterMap[chars[startIx + 1]] === 1
+  );
 }
 
 function hasPair(chars: string[], startIx: number): boolean {
@@ -64,7 +67,7 @@ function solve(start: string) {
   return currentAttempt.join("");
 }
 
-const input = await readInput();
-console.log(solve(input));
-
-export {};
+export default async function run() {
+  const input = await readInput(path.join(__dirname, "./input.txt"));
+  return solve(input);
+}

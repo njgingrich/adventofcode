@@ -1,9 +1,7 @@
-import * as it from "https://cdn.pika.dev/itertools@1.6.1";
+import * as it from "iter-tools";
+import * as path from "path";
 
-async function readInput(): Promise<string[]> {
-  const file = await Deno.readTextFile("./input.txt");
-  return file.split('\n').filter(Boolean);
-}
+import { readInputAsStrings } from "../util";
 
 type ParsedData = {
     from: string,
@@ -23,7 +21,7 @@ function parseLine(line: string): ParsedData {
 function solve(lines: string[]) {
     const data = lines.map(parseLine);
     const people = new Set(data.map(d => d.from));
-    const permutations: string[][] = it.permutations(people);
+    const permutations = it.permutations(people);
 
     const sentiments: Record<string, Record<string, number>> = {};
     data.forEach(row => {
@@ -50,7 +48,7 @@ function solve(lines: string[]) {
     return Math.max(...happinesses);
 }
 
-const input = await readInput();
-console.log(solve(input));
-
-export {};
+export default async function run() {
+  const input = await readInputAsStrings(path.join(__dirname, "./input.txt"));
+  return solve(input);
+}
