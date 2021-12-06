@@ -1,13 +1,20 @@
 import * as it from "iter-tools";
 import * as path from "path";
 
-import { readInputAsNumbers } from "../util";
+import { readInputAsStrings } from "../util";
 
-function solve(lines: number[]) {
+const INPUT_PATH = path.join(__dirname, "./input.txt");
+
+function parse(lines: string[]) {
   return lines;
 }
 
+function solve(lines: string[]) {
+  const parsed = parse(lines);
+  return parsed;
+}
+
 export default async function run() {
-  const input = await readInputAsNumbers(path.join(__dirname, "./input.txt"));
+  const input = await readInputAsStrings(INPUT_PATH);
   return solve(input);
 }

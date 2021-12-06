@@ -2,7 +2,7 @@ import * as path from "path";
 import { promises as fs } from "fs";
 import * as it from "iter-tools";
 
-export async function readInput(dir: string, split: string = "\n"): Promise<string> {
+export async function readInput(dir: string): Promise<string> {
   const file = await fs.readFile(dir, "utf-8");
   return file;
 }
@@ -15,6 +15,11 @@ export async function readInputAsStrings(dir: string, split: string = "\n"): Pro
 export async function readInputAsNumbers(dir: string): Promise<number[]> {
   const file = await fs.readFile(dir, "utf-8");
   return file.split("\n").filter(Boolean).map(Number);
+}
+
+export async function readInputAsString(dir: string, split: string = ","): Promise<string[]> {
+  const file = await readInput(dir);
+  return file.split(split);
 }
 
 export function min(arr: Iterable<number>) {

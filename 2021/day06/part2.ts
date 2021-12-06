@@ -1,7 +1,7 @@
 import { sum } from "lodash";
 import * as path from "path";
 
-import { readInput } from "../util";
+import { readInputAsString } from "../util";
 
 function sim(initialFish: number[], days: number) {
   let fish = Array.from(initialFish);
@@ -24,18 +24,14 @@ function sim(initialFish: number[], days: number) {
   return sum(fishInDay);
 }
 
-function parse(line: string) {
-  return line.split(",").filter(Boolean).map(Number);
-}
-
-function solve(line: string) {
-  const fish = parse(line);
+function solve(split: string[]) {
+  const fish = split.map(Number);
   let count = sim(fish, 256);
 
   console.log(count);
 }
 
 export default async function run() {
-  const input = await readInput(path.join(__dirname, "./input.txt"));
+  const input = await readInputAsString(path.join(__dirname, "./input.txt"), ",");
   return solve(input);
 }
