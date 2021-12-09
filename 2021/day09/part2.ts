@@ -8,15 +8,17 @@ import type { Coord } from "../util/grid";
 
 const INPUT_PATH = path.join(__dirname, "./input.txt");
 
+// Coord is a low point if all neighbors have a higher value than it
 function isLowPoint(coord: Coord, grid: Grid<number>) {
   return it.all(
     grid.neighbors(coord).values(),
-    (n => grid.getCoord(n) > grid.getCoord(coord))
+    (n) => grid.getByCoord(n) > grid.getByCoord(coord)
   );
 }
 
+// Starting at low point, do BFS until we reach frontier where coords are 9 (high points)
 function getBasinSize(start: Coord, grid: Grid<number>) {
-  const filterOutPeaks = (c: Coord) => grid.get(c[0], c[1]) !== 9;
+  const filterOutPeaks = (c: Coord) => grid.getByCoord(c) !== 9;
 
   const frontier = it.filter(grid.neighbors(start).values(), filterOutPeaks);
   const basin = new Set(frontier.map((p) => p.toString()));

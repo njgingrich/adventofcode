@@ -56,7 +56,7 @@ class Grid<T = any> {
     this.grid.set(Grid.toId(x, y), value);
   }
 
-  getCoord(coord: Coord) {
+  getByCoord(coord: Coord) {
     return this.get(coord[0], coord[1]);
   }
 
