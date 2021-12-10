@@ -25,3 +25,7 @@ export function intersection<T = any>(arr1: Array<T>, arr2: Array<T>): Array<T> 
   const set2 = new Set(arr2);
   return [...new Set(arr1)].filter((v) => set2.has(v));
 }
+
+export function nonNullable<T>(value: T): value is NonNullable<T> {
+  return value !== null && value !== undefined;
+}

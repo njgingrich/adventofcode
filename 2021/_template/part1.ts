@@ -1,4 +1,4 @@
-import * as it from "iter-tools";
+import * as it from "itertools";
 import * as path from "path";
 
 import { readInputAsStrings } from "../util";
