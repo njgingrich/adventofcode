@@ -30,6 +30,10 @@ class Grid<T = any> {
     return `${x},${y}`;
   }
 
+  static coordToId(coord: Coord): CoordString {
+    return `${coord[0]},${coord[1]}`;
+  }
+
   static asCoord(id: string): Coord {
     let [x, y] = id.split(",");
     return [Number(x), Number(y)];
