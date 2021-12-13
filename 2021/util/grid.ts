@@ -60,6 +60,15 @@ class Grid<T = any> {
     this.grid.set(Grid.toId(x, y), value);
   }
 
+  unsetCoord(coord: Coord) {
+    const [x, y] = coord;
+    this.unset(x, y);
+  }
+
+  unset(x: number, y: number) {
+    this.grid.set(Grid.toId(x, y), this.getDefault(x, y));
+  }
+
   getByCoord(coord: Coord) {
     return this.get(coord[0], coord[1]);
   }
@@ -136,6 +145,17 @@ class Grid<T = any> {
     }
 
     return found;
+  }
+
+  subgrid(minX: number, maxX: number, minY: number, maxY: number) {
+    let newGrid = new Grid<T>({ getDefault: this.getDefault });
+    for (let x = minX; x <= maxX; x++ ) {
+      for (let y = minY; y <= maxY; y++) {
+        newGrid.set(x, y, this.get(x, y));
+      }
+    }
+
+    return newGrid;
   }
 
   width() {
