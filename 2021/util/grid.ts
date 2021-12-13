@@ -66,7 +66,7 @@ class Grid<T = any> {
   }
 
   unset(x: number, y: number) {
-    this.grid.set(Grid.toId(x, y), this.getDefault(x, y));
+    this.grid.delete(Grid.toId(x, y));
   }
 
   getByCoord(coord: Coord) {
