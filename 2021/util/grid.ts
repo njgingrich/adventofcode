@@ -50,6 +50,10 @@ class Grid<T = any> {
     return grid;
   }
 
+  static manhattanDistance(from: Coord, to: Coord) {
+    return Math.abs(from[0] - to[0]) + Math.abs(from[1] - to[1]);
+  }
+
   setCoord(coord: Coord, value: T) {
     const [x, y] = coord;
     return this.set(x, y, value);
@@ -149,13 +153,23 @@ class Grid<T = any> {
 
   subgrid(minX: number, maxX: number, minY: number, maxY: number) {
     let newGrid = new Grid<T>({ getDefault: this.getDefault });
-    for (let x = minX; x <= maxX; x++ ) {
+    for (let x = minX; x <= maxX; x++) {
       for (let y = minY; y <= maxY; y++) {
         newGrid.set(x, y, this.get(x, y));
       }
     }
 
     return newGrid;
+  }
+
+  clone() {
+    const clone = new Grid<T>({getDefault: this.getDefault});
+    for (let [id, val] of this.grid) {
+      const [x,y] = Grid.asCoord(id);
+      clone.set(x, y, val);
+    }
+
+    return clone;
   }
 
   width() {
