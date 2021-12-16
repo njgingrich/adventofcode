@@ -1,14 +1,14 @@
 import * as it from "itertools";
 import * as path from "path";
 
-import { readInputAsStrings } from "../util";
+import { readInput } from "../util";
 
 type Packet = {
   version: number;
   typeId: number;
   value: number;
   subpackets: Packet[];
-  remainder: string;
+  size: number;
 }
 
 const INPUT_PATH = path.join(__dirname, "./input.txt");
@@ -39,101 +39,115 @@ function hexToBinaryString(input: string) {
   return out;
 }
 
-function parsePacket(packet: string): Packet {
-  const version = Number.parseInt(packet.slice(0, 3), 2);
-  const typeId = Number.parseInt(packet.slice(3, 6), 2);
-  const subpackets: Packet[] = [];
-  let remainder = packet.slice(6);
-
-  // console.log({ packet, version, typeId });
-
-  let value = -1;
-  if (typeId === 4) {
-    let done = false;
-    let bitString = packet.slice(6);
-    let binaryString = "";
-    while (!done) {
-      if (bitString[0] === "0") done = true;
-
-      binaryString += bitString.slice(1, 5);
-      bitString = bitString.slice(5);
-    }
-
-    value = Number.parseInt(binaryString, 2);
-    remainder = packet.slice(6 + (binaryString.length / 4 * 5));
-  } else {
-    const lengthTypeId = Number.parseInt(packet[6], 2);
-    if (lengthTypeId === 0) {
-      let bitLength = Number.parseInt(packet.slice(7, 22), 2);
-      let bitsUsed = 0;
-      remainder = packet.slice(22);
-
-      while (bitsUsed < bitLength) {
-        let subpacket = parsePacket(remainder);
-        bitsUsed += remainder.length - subpacket.remainder.length;
-        remainder = subpacket.remainder;
-
-        subpackets.push(subpacket);
-      }
-    } else {
-      let packetCount = Number.parseInt(packet.slice(7, 18), 2);
-      let packetsUsed = 0;
-      remainder = packet.slice(18);
-
-      while (packetsUsed < packetCount) {
-        let subpacket = parsePacket(remainder);
-        packetsUsed += 1;
-        remainder = subpacket.remainder;
-
-        subpackets.push(subpacket);
-      }
-    }
-  }
-
-  switch (typeId) {
-    case 0: { // SUM
-      value = subpackets.reduce((sum, p) => {
-        return sum + p.value;
-      }, 0);
-      break;
-    }
-    case 1: { // PRODUCT
-      value = subpackets.reduce((prod, p) => {
-        return prod * p.value;
-      }, 1);
-      break;
-    }
-    case 2: { // MINIMUM
-      value = Math.min(...subpackets.map(p => p.value));
-      break;
-    }
-    case 3: { // MAXIMUM
-      value = Math.max(...subpackets.map((p) => p.value));
-      break;
-    }
-    case 5: { // GREATER THAN
-      value = subpackets[0].value > subpackets[1].value ? 1 : 0;
-      break;
-    }
-    case 6: { // LESS THAN
-      value = subpackets[0].value < subpackets[1].value ? 1 : 0;
-      break;
-    }
-    case 7: { // EQUAL TO
-      value = subpackets[0].value === subpackets[1].value ? 1 : 0;
-      break;
-    }
-  }
-
-  return {version, typeId, value, subpackets, remainder };
+function parseHeader(packet: string, offset: number) {
+  const version = Number.parseInt(packet.slice(offset, offset + 3), 2);
+  const typeId = Number.parseInt(packet.slice(offset + 3, offset + 6), 2);
+  return {version, typeId};
 }
 
-function solve(lines: string[]) {
-  const packets = lines.map(hexToBinaryString).map(parsePacket);
-  return packets[0].value;
+function parseLengthTypeId(packet: string, offset: number): {lengthTypeId: number, offsetLength: number} {
+  let lengthTypeId = Number.parseInt(packet[offset], 2);
+  if (lengthTypeId === 0) {
+    return {lengthTypeId, offsetLength: 15}
+  } else {
+    return {lengthTypeId, offsetLength: 11}
+  }
+}
+
+function parsePacketByBits(packet: string, offset: number, bitLength: number): Packet[] {
+  let subpackets: Packet[] = [];
+  let bitsUsed = 0;
+
+  while (bitsUsed < bitLength && offset < packet.length) {
+    let subpacket = parsePacket(packet, offset);
+    subpackets.push(subpacket);
+    bitsUsed += subpacket.size;
+    offset += subpacket.size;
+  }
+
+  return subpackets;
+}
+
+function parsePacketByCount(packet: string, offset: number, packetCount: number): Packet[] {
+  let subpackets: Packet[] = [];
+
+  for (let _ of it.range(packetCount)) {
+    let subpacket = parsePacket(packet, offset);
+    subpackets.push(subpacket);
+    offset += subpacket.size;
+  }
+
+  return subpackets;
+}
+
+function getPacketValue(typeId: number, subpackets: Packet[]): number {
+  switch (typeId) {
+    case 0: return subpackets.reduce((sum, p) => sum + p.value, 0);
+    case 1: return subpackets.reduce((prod, p) => prod * p.value, 1);
+    case 2: return Math.min(...subpackets.map((p) => p.value));
+    case 3: return Math.max(...subpackets.map((p) => p.value));
+    case 5: return subpackets[0].value > subpackets[1].value ? 1 : 0;
+    case 6: return subpackets[0].value < subpackets[1].value ? 1 : 0;
+    case 7: return subpackets[0].value === subpackets[1].value ? 1 : 0;
+    default:
+      throw new Error(`Unknown type id ${typeId}`);
+  }
+}
+
+function parseOperatorPacket(packet: string, offset: number): Packet {
+  let baseOffset = offset;
+  const { version, typeId } = parseHeader(packet, offset);
+  offset += 6; // For version, typeId
+  const {lengthTypeId, offsetLength} = parseLengthTypeId(packet, offset);
+  offset += 1; // For lengthTypeId
+  const count = Number.parseInt(packet.slice(offset, offset + offsetLength), 2);
+  offset += offsetLength; // For offsetLength (11 or 15 bits)
+
+  const subpackets = lengthTypeId === 0
+    ? parsePacketByBits(packet, offset, count)
+    : parsePacketByCount(packet, offset, count);
+  offset += it.sum(subpackets.map(p => p.size)); // For subpackets length
+
+  
+  const value = getPacketValue(typeId, subpackets);
+  const size = offset - baseOffset;
+  return { version, typeId, value, subpackets, size };
+}
+
+function parseLiteralPacket(packet: string, offset: number): Packet {
+  const { version, typeId } = parseHeader(packet, offset);
+  offset += 6;
+
+  let chunk: string;
+  let binaryString = "";
+
+  while (true) {
+    chunk = packet.slice(offset, offset + 5);
+    binaryString += chunk.slice(1);
+    offset += 5;
+
+    if (chunk[0] === "0") break;
+  }
+
+  const size = 6 + (binaryString.length / 4) * 5;
+  const value = Number.parseInt(binaryString, 2);
+  return {version, typeId, size, value, subpackets: []};
+}
+
+function parsePacket(packet: string, offset: number = 0): Packet {
+  const typeId = Number.parseInt(packet.slice(offset + 3, offset + 6), 2);
+
+  return typeId === 4
+    ? parseLiteralPacket(packet, offset)
+    : parseOperatorPacket(packet, offset);
+}
+
+function solve(line: string) {
+  const packet = parsePacket(hexToBinaryString(line));
+  return packet.value;
 }
 
 export default async function run() {
-  const input = await readInputAsStrings(INPUT_PATH);
+  const input = await readInput(INPUT_PATH);
   return solve(input);
 }
