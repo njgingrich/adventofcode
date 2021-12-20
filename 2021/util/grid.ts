@@ -163,9 +163,9 @@ class Grid<T = any> {
   }
 
   clone() {
-    const clone = new Grid<T>({getDefault: this.getDefault});
+    const clone = new Grid<T>({ getDefault: this.getDefault });
     for (let [id, val] of this.grid) {
-      const [x,y] = Grid.asCoord(id);
+      const [x, y] = Grid.asCoord(id);
       clone.set(x, y, val);
     }
 
@@ -200,6 +200,10 @@ class Grid<T = any> {
     let grid = this.toArray();
 
     return grid.map((row) => row.join("")).join("\n");
+  }
+
+  entries(): IterableIterator<[string, T]> {
+    return this.grid.entries();
   }
 
   *[Symbol.iterator]() {
