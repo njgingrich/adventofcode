@@ -12,7 +12,7 @@
     "@types/node": "^14.14.11",
     "denque": "^2.0.1",
     "itertools": "^1.7.1",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.21",
     "minimist": "^1.2.5",
     "tinyqueue": "^2.0.3",
     "ts-node": "^9.1.1",
