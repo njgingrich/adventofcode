@@ -1,12 +1,14 @@
+import Queue from "tinyqueue";
+
 export type Coord = [number, number];
 
 type CoordString = string;
-type NeighborsMode = 'cardinal' | 'moores';
+type NeighborsMode = "cardinal" | "moores";
 type Lookup = [string, Coord];
 
 type GridConstructorOptions<T> = {
-  getDefault: (x: number, y: number) => T;
-}
+    getDefault: (x: number, y: number) => T;
+};
 
 class Grid<T = any> {
     public grid: Map<string, T>;
@@ -143,6 +145,25 @@ class Grid<T = any> {
         return map;
     }
 
+    neighborsWhere(
+        coord: Coord,
+        condition: (
+            coord: Coord,
+            entry: [string, Coord],
+            grid: Grid<T>
+        ) => boolean,
+        mode: NeighborsMode = "cardinal"
+    ): Map<string, Coord> {
+        const neighbors = this.neighbors(coord, mode);
+        const entries = neighbors.entries();
+        for (let entry of entries) {
+            if (!condition(coord, entry, this)) {
+                neighbors.delete(entry[0]);
+            }
+        }
+        return neighbors;
+    }
+
     /**
      * Get all coords in the grid that match the value.
      * @param value The value to search for.
@@ -175,6 +196,23 @@ class Grid<T = any> {
         }
 
         return found;
+    }
+
+    /**
+     * Get all coords in the grid that match the condition specified.
+     * @param condition A function that takes a coordinate and returns true/false.
+     */
+    findFirstWhere(
+        condition: (coord: Coord) => boolean
+    ): [T, Coord] | undefined {
+        for (let [key, cell] of this.grid) {
+            const coord = Grid.asCoord(key);
+            if (condition(coord)) {
+                return [cell, coord];
+            }
+        }
+
+        return undefined;
     }
 
     subgrid(minX: number, maxX: number, minY: number, maxY: number) {
@@ -267,3 +305,105 @@ class Grid<T = any> {
 }
 
 export default Grid;
+
+export class Node {
+    parent: Coord | null;
+    coord: Coord;
+    priority: number;
+
+    constructor(
+        parent: Coord | null,
+        coord: Coord,
+        priority = Number.POSITIVE_INFINITY
+    ) {
+        this.parent = parent;
+        this.coord = coord;
+        this.priority = priority;
+    }
+
+    toString() {
+        return `[${this.coord[0]}, ${this.coord[1]}]`;
+    }
+}
+
+type AStarOptions = {
+    heuristic: (from: Coord, to: Coord) => number;
+    neighborCondition?: (
+        coord: Coord,
+        entry: [string, Coord],
+        grid: Grid<number>
+    ) => boolean;
+};
+
+export function astar(
+    grid: Grid<number>,
+    from: Coord,
+    to: Coord,
+    options: AStarOptions = {
+        heuristic: Grid.manhattanDistance,
+    }
+) {
+    let frontier = new Queue<Node>([], (a, b) => {
+        return a.priority - b.priority;
+    });
+
+    let cameFrom: Record<string, Coord | null> = {};
+    let costsFor: Record<string, number> = {};
+
+    frontier.push(new Node(null, from, 0));
+    cameFrom[Grid.coordToId(from)] = null;
+    costsFor[Grid.coordToId(from)] = 0;
+
+    while (frontier.length > 0) {
+        let current = frontier.pop()?.coord;
+        if (!current) throw new Error("Somehow got node from empty queue");
+
+        // Found the end
+        if (current[0] === to[0] && current[1] === to[1]) break;
+
+        let neighbors;
+        if (options.neighborCondition) {
+            neighbors = grid.neighborsWhere(current, options.neighborCondition);
+        } else {
+            neighbors = grid.neighbors(current);
+        }
+        // console.log(`Neighbors for [${current.toString()}] are: ${[...neighbors.values()].map(n => `[${n.toString()}]`)}`)
+        neighbors.forEach((neighbor) => {
+            if (!current) return;
+            const nId = Grid.coordToId(neighbor);
+            const newCost =
+                costsFor[Grid.coordToId(current)] + grid.getByCoord(neighbor);
+
+            if (!(nId in costsFor) || newCost < costsFor[nId]) {
+                const priority = newCost + options.heuristic(neighbor, to);
+                costsFor[nId] = newCost;
+                frontier.push(new Node(current, neighbor, priority));
+                cameFrom[nId] = current;
+            }
+        });
+    }
+
+    return cameFrom;
+}
+
+export function reconstructPath(
+    start: Coord,
+    goal: Coord,
+    cameFrom: Record<string, Coord | null>
+) {
+    let current = goal;
+    let path: Record<string, boolean> = {};
+    path[Grid.coordToId(current)] = true;
+
+    while (!(start[0] === current[0] && start[1] === current[1])) {
+        const from = cameFrom[Grid.coordToId(current)];
+        if (!from)
+            throw new Error(
+                `Unable to find a path back from [${current.toString()}]`
+            );
+        current = from;
+        path[Grid.coordToId(current)] = true;
+    }
+    path[Grid.coordToId(start)] = true;
+    return path;
+}
