@@ -92,8 +92,8 @@ class Grid<T = any> {
         return val;
     }
 
-    getRow(y: number): Array<[T, Coord]> {
-        const subgrid = this.subgrid(0, this.width() - 1, y, y);
+    getRow(y: number, xStart = 0, xEnd = this.width() - 1): Array<[T, Coord]> {
+        const subgrid = this.subgrid(xStart, xEnd, y, y);
         const entries: Array<[T, Coord]> = [];
 
         for (let [key, cell] of subgrid) {
@@ -102,14 +102,18 @@ class Grid<T = any> {
         return entries;
     }
 
-    getCol(x: number): Array<[T, Coord]> {
-        const subgrid = this.subgrid(x, x, 0, this.height() - 1);
+    getCol(x: number, yStart = 0, yEnd = this.height() - 1): Array<[T, Coord]> {
+        const subgrid = this.subgrid(x, x, yStart, yEnd);
         const entries: Array<[T, Coord]> = [];
 
         for (let [key, cell] of subgrid) {
             entries.push([cell, Grid.asCoord(key)]);
         }
         return entries;
+    }
+
+    getBounds() {
+        return {minX: this.minX, minY: this.minY, maxX: this.maxX, maxY: this.maxY};
     }
 
     inBoundsCoord(coord: Coord) {
