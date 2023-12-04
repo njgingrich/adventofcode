@@ -169,6 +169,48 @@ class Grid<T = any> {
     }
 
     /**
+     * Get coords for all cells touching the provided subgrid area. (Including diagonals)
+     * 
+     * @param minX Top-left coord of grid area
+     * @param maxX Top-right coord of grid area
+     * @param minY Bottom-left coord of grid area
+     * @param maxY Bottom-right coord of grid area
+     */
+    touching(minX: number, maxX: number, minY: number, maxY: number) {
+        const touching: Coord[] = [];
+
+        // Get the row above - including the left/right extra
+        if (this.inBounds(minX, minY - 1)) {
+            for (let x = minX - 1; x <= maxX + 1; x++) {
+                if (this.inBounds(x, minY - 1)) {
+                    touching.push([x, minY - 1]);
+                }
+            }
+        }
+
+        // Get the row below - including the left/right extra
+        if (this.inBounds(minX, maxY + 1)) {
+            for (let x = minX - 1; x <= maxX + 1; x++) {
+                if (this.inBounds(x, maxY + 1)) {
+                    touching.push([x, maxY + 1]);
+                }
+            }
+        }
+
+        // Get the left/right sides of each row
+        for (let y = minY; y <= maxY; y++) {
+            if (this.inBounds(minX - 1, y)) {
+                touching.push([minX - 1, y]);
+            }
+            if (this.inBounds(maxX + 1, y)) {
+                touching.push([maxX + 1, y]);
+            }
+        }
+
+        return touching;
+    }
+
+    /**
      * Get all coords in the grid that match the value.
      * @param value The value to search for.
      */

@@ -21,6 +21,11 @@ export async function readInputAsString(dir: string, split: string = ","): Promi
   return file.split(split);
 }
 
+export async function readInputAsStringGrid(dir: string, split: string = ""): Promise<string[][]> {
+  const strings = await readInputAsStrings(dir);
+  return strings.map(row => row.split(split));
+}
+
 export async function readInputAsNumberGrid(dir: string, split: string = ""): Promise<number[][]> {
   const strings = await readInputAsStrings(dir);
   return strings.map(row => row.split(split).map(Number));
