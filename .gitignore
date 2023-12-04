@@ -2,3 +2,8 @@
 .vscode
 node_modules
 yarn-error.log
+
+# https://www.reddit.com/r/adventofcode/wiki/faqs/copyright/inputs
+# Ignore all files named "input.txt" (whatever you named it)
+input.txt
+!**/_template/input.txt
