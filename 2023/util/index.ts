@@ -39,3 +39,11 @@ export function intersection<T = any>(arr1: Array<T>, arr2: Array<T>): Array<T> 
 export function nonNullable<T>(value: T): value is NonNullable<T> {
   return value !== null && value !== undefined;
 }
+
+export function gcd(a: number, b: number): number {
+    return !b ? a : gcd(b, a % b);
+}
+
+export function lcm(a: number, b: number) {
+    return (a * b) / gcd(a, b);   
+}
