@@ -31,6 +31,11 @@ export async function readInputAsNumberGrid(dir: string, split: string = ""): Pr
   return strings.map(row => row.split(split).map(Number));
 }
 
+export async function readInputAsGrid<T>(dir: string, split: string = "", parser: (el: string) => T): Promise<T[][]> {
+  const strings = await readInputAsStrings(dir);
+  return strings.map(row => row.split(split).map(parser));
+}
+
 export function intersection<T = any>(arr1: Array<T>, arr2: Array<T>): Array<T> {
   const set2 = new Set(arr2);
   return [...new Set(arr1)].filter((v) => set2.has(v));
