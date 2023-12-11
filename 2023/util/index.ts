@@ -52,3 +52,7 @@ export function gcd(a: number, b: number): number {
 export function lcm(a: number, b: number) {
     return (a * b) / gcd(a, b);   
 }
+
+export function getPairs<T>(elements: T[]) {
+  return elements.flatMap((val, i) => elements.slice(i + 1).map(v => [val, v]));
+}
