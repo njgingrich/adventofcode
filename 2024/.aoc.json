@@ -1,0 +1,19 @@
+{
+  "year": 2024,
+  "days": {
+    "NaN": {
+      "part1": {
+        "solved": false,
+        "tries": 4,
+        "result": "1722302",
+        "runtime": 0
+      },
+      "part2": {
+        "solved": false,
+        "tries": 2,
+        "result": "20373490",
+        "runtime": 0
+      }
+    }
+  }
+}

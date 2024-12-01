@@ -1,0 +1,11 @@
+{
+  "description": "Advent of Code solutions for 2024",
+  "version": "1.0.0",
+  "tasks": {
+    "day": "aocrunner day"
+  },
+  "imports": {
+    "aocrunner": "jsr:@njgingrich/aocrunner@0.1.13",
+    "tinyqueue": "npm:tinyqueue@^3.0.0"
+  }
+}
