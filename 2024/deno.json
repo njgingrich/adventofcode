@@ -5,7 +5,8 @@
     "day": "aocrunner day"
   },
   "imports": {
-    "aocrunner": "jsr:@njgingrich/aocrunner@0.1.13",
+    "@std/path": "jsr:@std/path@^1.0.8",
+    "aocrunner": "jsr:@njgingrich/aocrunner@0.1.15",
     "tinyqueue": "npm:tinyqueue@^3.0.0"
   }
 }

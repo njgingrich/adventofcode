@@ -1,17 +1,31 @@
 {
   "year": 2024,
   "days": {
-    "NaN": {
+    "1": {
       "part1": {
-        "solved": false,
+        "solved": true,
         "tries": 4,
         "result": "1722302",
         "runtime": 0
       },
       "part2": {
-        "solved": false,
+        "solved": true,
         "tries": 2,
         "result": "20373490",
+        "runtime": 0
+      }
+    },
+    "2": {
+      "part1": {
+        "solved": false,
+        "tries": 9,
+        "result": "591",
+        "runtime": 0
+      },
+      "part2": {
+        "solved": false,
+        "tries": 9,
+        "result": "621",
         "runtime": 0
       }
     }
