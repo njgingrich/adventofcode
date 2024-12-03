@@ -28,6 +28,20 @@
         "result": "621",
         "runtime": 0
       }
+    },
+    "3": {
+      "part1": {
+        "solved": false,
+        "tries": 1,
+        "result": "174561379",
+        "runtime": 0
+      },
+      "part2": {
+        "solved": false,
+        "tries": 1,
+        "result": "106921067",
+        "runtime": 0
+      }
     }
   }
 }
