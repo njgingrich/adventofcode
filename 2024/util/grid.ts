@@ -112,6 +112,18 @@ class Grid<T = any> {
     return entries;
   }
 
+  getDiagonal(x: number, y: number, length: number, xDirection: 1 | -1, yDirection: 1 | -1): Array<[T, Coord]> {
+    const diagonal: Array<[T, Coord]> = [];
+
+    for (let i = 0; i < length; i++) {
+      const xCoord = x + i * xDirection;
+      const yCoord = y + i * yDirection;
+      diagonal.push([this.get(xCoord, yCoord), [xCoord, yCoord]]);
+    }
+
+    return diagonal;
+  }
+
   getBounds() {
     return {
       minX: this.minX,

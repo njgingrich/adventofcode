@@ -13,6 +13,7 @@
     "npm:@inquirer/prompts@^7.1.0": "7.1.0_@types+node@22.7.5",
     "npm:@types/jsdom@21.1.7": "21.1.7",
     "npm:jsdom@25.0.1": "25.0.1",
+    "npm:tinyqueue@*": "3.0.0",
     "npm:tinyqueue@3": "3.0.0"
   },
   "jsr": {
