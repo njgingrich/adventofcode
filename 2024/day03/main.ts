@@ -1,4 +1,3 @@
-
 import { run } from "aocrunner";
 import { parse, SEPARATOR } from "@std/path";
 
@@ -23,7 +22,9 @@ function parseInput(rawInput: string): string {
 
 // turn mul(a,b) into a*b
 function instructionToMul(instruction: string): number {
-  const [a, b] = instruction.slice(4).replace(/[\(\)]/g, "").split(",").map(Number);
+  const [a, b] = instruction.slice(4).replace(/[\(\)]/g, "").split(",").map(
+    Number,
+  );
   return a * b;
 }
 
@@ -31,7 +32,7 @@ function part1(rawInput: string) {
   const input = parseInput(rawInput);
   const matches = input.match(mulRegex);
   if (matches === null) {
-      return "0";
+    return "0";
   }
 
   const matchVals = matches.map(instructionToMul);
@@ -68,7 +69,8 @@ run({
         expected: "0",
       },
       {
-        input: "xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))",
+        input:
+          "xmul(2,4)%&mul[3,7]!@^do_not_mul(5,5)+mul(32,64]then(mul(11,8)mul(8,5))",
         expected: "161",
       },
     ],
@@ -78,7 +80,8 @@ run({
   part2: {
     tests: [
       {
-        input: "xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))",
+        input:
+          "xmul(2,4)&mul[3,7]!^don't()_mul(5,5)+mul(32,64](mul(11,8)undo()?mul(8,5))",
         expected: "48",
       },
     ],

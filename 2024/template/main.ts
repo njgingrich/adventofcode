@@ -1,4 +1,3 @@
-
 import { run } from "aocrunner";
 import { parse, SEPARATOR } from "@std/path";
 

@@ -1,4 +1,3 @@
-
 import { run } from "aocrunner";
 
 function getRawInput(): Promise<string> {
@@ -13,20 +12,20 @@ function getDay(): number {
   return Number(dayString.slice(-2));
 }
 
-function parseInput(rawInput: string): {left:number[], right:number[]} {
+function parseInput(rawInput: string): { left: number[]; right: number[] } {
   const lines = rawInput.trim().split("\n");
   const left: number[] = [];
   const right: number[] = [];
-  lines.forEach(line => {
+  lines.forEach((line) => {
     const [l, r] = line.split(/\s+/);
     left.push(Number(l));
     right.push(Number(r));
   });
-  return {left, right};
+  return { left, right };
 }
 
 function part1(rawInput: string) {
-  const {left, right} = parseInput(rawInput);
+  const { left, right } = parseInput(rawInput);
 
   const leftSorted = left.slice().sort((a, b) => a - b);
   const rightSorted = right.slice().sort((a, b) => a - b);
@@ -36,7 +35,7 @@ function part1(rawInput: string) {
 }
 
 function part2(rawInput: string) {
-  const {left, right} = parseInput(rawInput);
+  const { left, right } = parseInput(rawInput);
 
   const counts = left.map((el, i) => {
     const elCount = right.filter((rEl) => rEl === el).length;
