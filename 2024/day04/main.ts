@@ -1,6 +1,6 @@
 import { run } from "aocrunner";
 import { parse, SEPARATOR } from "@std/path";
-import Grid, {type Coord} from "../util/grid.ts";
+import Grid, { type Coord } from "../util/grid.ts";
 import { input } from "npm:@inquirer/prompts@^7.1.0";
 
 function getRawInput(): Promise<string> {
@@ -21,7 +21,7 @@ function parseInput(rawInput: string): Grid<string> {
 }
 
 function findChars(grid: Grid<string>, char: string): Coord[] {
-    return grid.findWhere((c) => grid.getByCoord(c) === char).map(entry => entry[1]);
+  return grid.findWhere((c) => grid.getByCoord(c) === char).map((entry) => entry[1]);
 }
 
 function findXmasCount(grid: Grid<string>, xCoords: Coord[]): number {
@@ -36,7 +36,7 @@ function findXmasCount(grid: Grid<string>, xCoords: Coord[]): number {
     [x + 3, y + 3], // down-right
     [x - 3, y + 3], // down-left
     [x + 3, y - 3], // up-right
-  ]
+  ];
   for (const xCoord of xCoords) {
     for (let [x, y] of mappings(xCoord)) {
       if (!grid.inBounds(x, y)) {
@@ -48,25 +48,25 @@ function findXmasCount(grid: Grid<string>, xCoords: Coord[]): number {
       let text;
       if (x === xCoord[0]) {
         if (y < xCoord[1]) {
-          text = grid.getCol(xCoord[0], y, xCoord[1]).map(r => r[0]).join("");
+          text = grid.getCol(xCoord[0], y, xCoord[1]).map((r) => r[0]).join("");
         } else {
-          text = grid.getCol(xCoord[0], xCoord[1], y).map(r => r[0]).join("");
+          text = grid.getCol(xCoord[0], xCoord[1], y).map((r) => r[0]).join("");
         }
-      // if x doesn't change, get row (x is changing)
+        // if x doesn't change, get row (x is changing)
       } else if (y === xCoord[1]) {
         if (x < xCoord[0]) {
-            text = grid.getRow(xCoord[1], x, xCoord[0]).map(r => r[0]).join("");
+          text = grid.getRow(xCoord[1], x, xCoord[0]).map((r) => r[0]).join("");
         } else {
-            text = grid.getRow(xCoord[1], xCoord[0], x).map(r => r[0]).join("");
+          text = grid.getRow(xCoord[1], xCoord[0], x).map((r) => r[0]).join("");
         }
       } else {
         const xdir = x > xCoord[0] ? 1 : -1;
         const ydir = y > xCoord[1] ? 1 : -1;
-        text = grid.getDiagonal(xCoord[0], xCoord[1], 4, xdir, ydir).map(r => r[0]).join("");
+        text = grid.getDiagonal(xCoord[0], xCoord[1], 4, xdir, ydir).map((r) => r[0]).join("");
       }
 
       // console.log('Text:', text);
-      if (text === 'XMAS' || text === 'SAMX') {
+      if (text === "XMAS" || text === "SAMX") {
         sum++;
       }
     }
@@ -84,17 +84,20 @@ function findMasXsCount(grid: Grid<string>, aCoords: Coord[]) {
       "SW": neighbors.get("SW"),
       "SE": neighbors.get("SE"),
     } as Record<string, Coord>;
-    if (Object.values(diagonals).some(val => val === undefined)) {
+    if (Object.values(diagonals).some((val) => val === undefined)) {
       // console.log("Diagonals undefined", Object.values(diagonals));
       return 0;
     }
 
-    if (Object.values(diagonals).some(val => !["M", "S"].includes(grid.getByCoord(val)))) {
+    if (Object.values(diagonals).some((val) => !["M", "S"].includes(grid.getByCoord(val)))) {
       // console.log("Diagonals not M or S", Object.values(diagonals));
       return 0;
     }
 
-    if (grid.getByCoord(diagonals.NW) === grid.getByCoord(diagonals.SE) || grid.getByCoord(diagonals.NE) === grid.getByCoord(diagonals.SW)) {
+    if (
+      grid.getByCoord(diagonals.NW) === grid.getByCoord(diagonals.SE) ||
+      grid.getByCoord(diagonals.NE) === grid.getByCoord(diagonals.SW)
+    ) {
       // console.log("Matching diagonals", Object.values(diagonals));
       return 0;
     }
@@ -125,7 +128,7 @@ run({
 .A..A.
 XMAS.S
 .X....`,
-        expected: 4
+        expected: 4,
       },
       {
         input: `

@@ -73,7 +73,5 @@ export function lcm(a: number, b: number) {
 }
 
 export function getPairs<T>(elements: T[]) {
-  return elements.flatMap((val, i) =>
-    elements.slice(i + 1).map((v) => [val, v])
-  );
+  return elements.flatMap((val, i) => elements.slice(i + 1).map((v) => [val, v]));
 }

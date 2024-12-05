@@ -143,7 +143,7 @@ function buildUpdate(
    * We can determine the correct order of the list by looking at how many elements each number
    * must come before, and how many it must come after. Then we can sort by that score.
    * (Probably can insert into a presized array or something too but this works!)
-   * 
+   *
    * Example: Given [97,13,75,29,47] and the maps:
    * beforeMap: {
    *   47 => [ 53, 13, 61, 29 ],
@@ -167,7 +167,7 @@ function buildUpdate(
    * look at 75 - after 97,  before 13, [        ] before 29, before 47 -> 1 - 3 = -2
    * look at 29 - after 75,  before 13, after 75,  [        ] after 47  -> 3 - 1 =  2
    * look at 47 - after 97,  before 13, after 75,  before 29, [       ] -> 2 - 2 =  0
-  */
+   */
 
   const scores = new Map<number, number>();
 

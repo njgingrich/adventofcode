@@ -112,7 +112,13 @@ class Grid<T = any> {
     return entries;
   }
 
-  getDiagonal(x: number, y: number, length: number, xDirection: 1 | -1, yDirection: 1 | -1): Array<[T, Coord]> {
+  getDiagonal(
+    x: number,
+    y: number,
+    length: number,
+    xDirection: 1 | -1,
+    yDirection: 1 | -1,
+  ): Array<[T, Coord]> {
     const diagonal: Array<[T, Coord]> = [];
 
     for (let i = 0; i < length; i++) {

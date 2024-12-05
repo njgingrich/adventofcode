@@ -44,9 +44,8 @@ function determineSafety(record: number[]): "safe" | "unsafe" {
 function part1(rawInput: string) {
   const input = parseInput(rawInput);
 
-  return input.map((record) => determineSafety(record)).filter((result) =>
-    result === "safe"
-  ).length.toString();
+  return input.map((record) => determineSafety(record)).filter((result) => result === "safe").length
+    .toString();
 }
 
 function part2(rawInput: string) {
@@ -66,9 +65,7 @@ function part2(rawInput: string) {
       newRecords.push(newRecord);
     });
 
-    const newOutcomes = newRecords.map((newRecord) =>
-      determineSafety(newRecord)
-    );
+    const newOutcomes = newRecords.map((newRecord) => determineSafety(newRecord));
     if (newOutcomes.some((newOutcome) => newOutcome === "safe")) {
       return { result: "safe" };
     } else {
