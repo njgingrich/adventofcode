@@ -60,13 +60,13 @@
     "5": {
       "part1": {
         "solved": false,
-        "tries": 5,
+        "tries": 9,
         "result": 4637,
         "runtime": 0
       },
       "part2": {
         "solved": false,
-        "tries": 1,
+        "tries": 5,
         "result": 6370,
         "runtime": 0
       }

@@ -31,7 +31,7 @@ function parseInput(
   };
 }
 
-function findInvalidIndex(
+function isValid(
   list: number[],
   num: number,
   map: Map<number, number[]>,
@@ -55,38 +55,11 @@ function isValidUpdate(
     let befores = update.slice(0, i + 1);
     let afters = update.slice(i);
 
-    if (findInvalidIndex(befores, num, beforeMap) !== undefined) return false;
-    if (findInvalidIndex(afters, num, afterMap) !== undefined) return false;
+    if (isValid(befores, num, beforeMap)) return false;
+    if (isValid(afters, num, afterMap)) return false;
   }
 
   return true;
-}
-
-function findInvalidIndexes(
-  update: number[],
-  beforeMap: Map<number, number[]>,
-  afterMap: Map<number, number[]>,
-) {
-  const invalidBefore: number[] = [];
-  const invalidAfter: number[] = [];
-  for (let i = 0; i < update.length - 1; i++) {
-    let num = update[i];
-    let befores = update.slice(0, i + 1);
-    let afters = update.slice(i);
-
-    let invalidIx = findInvalidIndex(befores, num, beforeMap);
-    if (invalidIx !== undefined) {
-      console.log("adding to invalidBefore", invalidIx);
-      invalidBefore.push(invalidIx);
-    }
-    invalidIx = findInvalidIndex(afters, num, afterMap);
-    if (invalidIx !== undefined) {
-      console.log("adding to invalidAfter", i);
-      invalidAfter.push(i);
-    }
-  }
-
-  return { before: invalidBefore, after: invalidAfter };
 }
 
 function getMiddleElement(arr: number[]): number {
@@ -119,40 +92,15 @@ function getMaps(
   return { beforeMap, afterMap };
 }
 
-function getAlternatives(update: number[], invalidIx: number) {
-  const alternatives: number[][] = [];
-  const updateWithout = [...update];
-  updateWithout.splice(invalidIx, 1);
-
-  for (let i = 0; i < update.length; i++) {
-    if (i === invalidIx) continue;
-    const newUpdate = [...updateWithout];
-    newUpdate.splice(i, 0, update[invalidIx]);
-    alternatives.push(newUpdate);
-  }
-
-  return alternatives;
-}
-
 function buildUpdate(
   update: number[],
-  beforeMap: Map<number, number[]>,
   afterMap: Map<number, number[]>,
 ) {
   /**
    * We can determine the correct order of the list by looking at how many elements each number
-   * must come before, and how many it must come after. Then we can sort by that score.
-   * (Probably can insert into a presized array or something too but this works!)
+   * must come after. Then we can sort by that score.
    *
-   * Example: Given [97,13,75,29,47] and the maps:
-   * beforeMap: {
-   *   47 => [ 53, 13, 61, 29 ],
-   *   97 => [ 13, 61, 47, 29, 53, 75 ],
-   *   75 => [ 29, 53, 47, 61, 13 ],
-   *   61 => [ 13, 53, 29 ],
-   *   29 => [ 13 ],
-   *   53 => [ 29, 13 ]
-   * },
+   * Example: Given [97,13,75,29,47] and the map:
    * afterMap: {
    *   53 => [ 47, 75, 61, 97 ],
    *   13 => [ 97, 61, 29, 47, 75, 53 ],
@@ -162,25 +110,20 @@ function buildUpdate(
    *   75 => [ 97 ]
    * }
    *
-   * look at 97 - [        ] before 13, before 75, before 29, before 47 -> 0 - 4 =  4
-   * look at 13 - after 97,  [        ] after 75,  after 29,  after 47  -> 4 - 0 = -4
-   * look at 75 - after 97,  before 13, [        ] before 29, before 47 -> 1 - 3 = -2
-   * look at 29 - after 75,  before 13, after 75,  [        ] after 47  -> 3 - 1 =  2
-   * look at 47 - after 97,  before 13, after 75,  before 29, [       ] -> 2 - 2 =  0
+   * look at 97 - [        ] before 13, before 75, before 29, before 47 -> 0
+   * look at 13 - after 97,  [        ] after 75,  after 29,  after 47  -> 4
+   * look at 75 - after 97,  before 13, [        ] before 29, before 47 -> 1
+   * look at 29 - after 75,  before 13, after 75,  [        ] after 47  -> 3
+   * look at 47 - after 97,  before 13, after 75,  before 29, [       ] -> 2
    */
 
-  const scores = new Map<number, number>();
+  const sorted: number[] = Array(update.length).fill(0);
 
   for (let i = 0; i < update.length; i++) {
-    const num = update[i];
-    const remaining = update.filter((n) => n !== num);
-
-    const beforeCount = beforeMap.get(num)?.filter((n) => remaining.includes(n)).length ?? 0;
-    const afterCount = afterMap.get(num)?.filter((n) => remaining.includes(n)).length ?? 0;
-    scores.set(num, afterCount - beforeCount);
+    const afterCount = afterMap.get(update[i])?.filter((n) => update.includes(n)).length ?? 0;
+    sorted[afterCount] = update[i];
   }
-
-  return update.sort((a, b) => (scores.get(a) ?? 0) - (scores.get(b) ?? 0));
+  return sorted;
 }
 
 function part1(rawInput: string) {
@@ -198,11 +141,10 @@ function part2(rawInput: string) {
 
   const invalidUpdates = updates.filter((u) => !isValidUpdate(u, beforeMap, afterMap));
 
-  return invalidUpdates.map(
-    (u) => buildUpdate(u, beforeMap, afterMap),
-  ).map(
-    (u) => getMiddleElement(u),
-  ).reduce((acc, val) => acc + val, 0);
+  return invalidUpdates
+    .map((u) => buildUpdate(u, afterMap))
+    .map((u) => getMiddleElement(u))
+    .reduce((acc, val) => acc + val, 0);
 }
 
 run({
