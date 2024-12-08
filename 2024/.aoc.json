@@ -70,8 +70,22 @@
         "result": 6370,
         "runtime": 0
       }
+    },
+    "6": {
+      "part1": {
+        "solved": false,
+        "tries": 1,
+        "result": 4964,
+        "runtime": 0
+      },
+      "part2": {
+        "solved": false,
+        "tries": 2,
+        "result": 1740,
+        "runtime": 0
+      }
     }
   },
-  "prevSubmitTimestamp": 1733327123781,
+  "prevSubmitTimestamp": 1733691047392,
   "submitDelayMs": 60000
 }
