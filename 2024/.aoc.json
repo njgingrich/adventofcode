@@ -126,8 +126,22 @@
         "result": 6421724645083,
         "runtime": 0
       }
+    },
+    "10": {
+      "part1": {
+        "solved": false,
+        "tries": 5,
+        "result": 582,
+        "runtime": 0
+      },
+      "part2": {
+        "solved": false,
+        "tries": 1,
+        "result": 1302,
+        "runtime": 0
+      }
     }
   },
-  "prevSubmitTimestamp": 1733876880052,
+  "prevSubmitTimestamp": 1733891496228,
   "submitDelayMs": 60000
 }
