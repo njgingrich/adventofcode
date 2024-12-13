@@ -1,10 +1,11 @@
 import Queue from "npm:tinyqueue";
 
 export type Coord = [number, number];
+export type Direction = "N" | "S" | "E" | "W" | "NW" | "SW" | "NE" | "SE";
 
 type CoordString = string;
 type NeighborsMode = "cardinal" | "moores";
-type Lookup = [string, Coord];
+type Lookup = [Direction, Coord];
 
 type GridConstructorOptions<T> = {
   getDefault: (x: number, y: number) => T;
@@ -55,6 +56,17 @@ class Grid<T = any> {
   static manhattanDistance(from: Coord, to: Coord) {
     return Math.abs(from[0] - to[0]) + Math.abs(from[1] - to[1]);
   }
+
+  static DIRECTIONS: Record<Direction, Coord> = {
+    "N": [0, -1],
+    "S": [0, 1],
+    "E": [1, 0],
+    "W": [-1, 0],
+    "NW": [-1, -1],
+    "SW": [-1, 1],
+    "NE": [1, -1],
+    "SE": [1, 1],
+  } as const;
 
   setCoord(coord: Coord, value: T) {
     const [x, y] = coord;
@@ -155,18 +167,20 @@ class Grid<T = any> {
   neighbors(
     coord: Coord,
     mode: NeighborsMode = "cardinal",
-  ): Map<string, Coord> {
+    checkBounds: boolean = true,
+  ): Map<Direction, Coord> {
     const lookups = this.getNeighborsLookupForMode(
       coord[0],
       coord[1],
       mode,
     );
-    const map = new Map<string, Coord>();
+    const map = new Map<Direction, Coord>();
 
     for (let [key, coord] of lookups) {
-      if (this.inBoundsCoord(coord)) {
-        map.set(key, coord);
+      if (checkBounds && !this.inBoundsCoord(coord)) {
+        continue;
       }
+      map.set(key, coord);
     }
 
     return map;
